@@ -5,7 +5,7 @@ import com.codegym.cms.service.bookService.BookService;
 import com.codegym.cms.service.categoryService.CategoryService;
 import com.codegym.cms.service.bookService.IBookService;
 import com.codegym.cms.service.categoryService.ICategoryService;
-import formatter.CategoryFormatter;
+import com.codegym.cms.formatter.CategoryFormatter;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;

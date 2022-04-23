@@ -32,8 +32,8 @@ public class BookController {
     @Value("${file-upload}")
     private String fileUpload;
 
-    @ModelAttribute("category")
-    public Iterable<Category> categories(){
+    @ModelAttribute("categories")
+    private Iterable<Category> categories(){
         return categoryService.findAll();
     }
 
@@ -44,28 +44,25 @@ public class BookController {
         return modelAndView;
     }
     @PostMapping("/create-book")
-    public ModelAndView create(BookForm bookForm) {
+    public ModelAndView saveBook(BookForm bookForm) {
         MultipartFile file = bookForm.getAvatar();
-        //lay ten file
         String fileName = file.getOriginalFilename();
-
-        //lay thong tin cua customer
         String name = bookForm.getName();
         double price = bookForm.getPrice();
         String author = bookForm.getAuthor();
         Category category = bookForm.getCategory();
 
-        //coppy file
         try {
             FileCopyUtils.copy(file.getBytes(), new File(fileUpload+ fileName));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        Book book = new Book(bookForm.getName(), bookForm.getPrice(), bookForm.getAuthor(), fileName, bookForm.getCategory());
+        Book book = new Book(name,price,author,fileName,category);
 
         bookService.save(book);
         ModelAndView modelAndView = new ModelAndView("/book/create");
+        modelAndView.addObject("book", new BookForm());
         modelAndView.addObject("message", "New book created successfully");
         return modelAndView;
     }
