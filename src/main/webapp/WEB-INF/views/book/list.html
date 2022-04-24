@@ -1,36 +1,44 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
+<head th:replace="/book/layout::head">
     <meta charset="UTF-8">
-    <title>Book</title>
+    <title>Library</title>
 </head>
-<body>
-<a href="/create-book">ADD YOUR NEW BOOK  </a>
-<h1>List your books</h1>
 
-<table border="1">
-    <tr>
-        <th>Book Title </th>
-        <th>Price:</th>
-        <th>Author</th>
-        <th>Category</th>
-        <th>Image</th>
-        <th>Edit</th>
-        <th>Delete</th>
-    </tr>
-    <th:block th:each="book : ${books}">
-        <tr>
-            <td th:text="${book.name}"></td>
-            <td th:text="${book.price}"></td>
-            <td th:text="${book.author}"></td>
-            <td th:if="${book.category}" th:text="${book.category.name}"></td>
-            <td th:unless="${book.category}"></td>
-            <td><a th:href="@{/edit-book/__${book.id}__ }">Edit</a></td>
-            <td><a th:href="@{/delete-book/__${book.id}__ }">Delete</a></td>
-        </tr>
+<body>
+<div>
+    <h1>Book List</h1>
+    <h2><a th:href="@{/book/create}">Add new book</a></h2>
+</div>
+<form>
+    <div>
+        Search by name:
+    </div>
+    <input name="search" type="text"/>
+    <input type="submit" value="Search"/>
+</form>
+<th:block th:if="${back}">
+    <a th:href="@{/book}" th:text="${back}"></a>
+</th:block>
+<div>
+    <th:block th:if="${message}">
+        <p th:text="${message}"></p>
     </th:block>
-</table>
-<br>
-<a href="/category">Category List </a>
+</div>
+<th:block th:each="book : ${books}">
+    <div class="gallery">
+        <div class="desc"><a target="_blank" th:href="@{/book/view/__${book.id}__}" th:text="${book.name}"></a></div>
+        <a  th:href="@{/book}">
+            <img th:src="@{'/image/' + ${book.image}}" alt="broken" width="220" >
+        </a>
+        <div class="desc" th:text="'Author '+${book.author}"></div>
+        <div class="desc" th:text="'Category ' + ${book.category.name}"></div>
+        <div class="desc" th:text="'Price '+${book.price}"></div>
+        <div class="desc" ><a th:href="@{/book/edit/__${book.id}__}">Edit</a></div>
+        <div class="desc" ><a th:href="@{/book/delete/__${book.id}__}">Delete</a></div>
+    </div>
+</th:block>
+
 </body>
+<footer th:replace="/book/layout :: footer"></footer>
 </html>

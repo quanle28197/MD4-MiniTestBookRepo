@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/book/layout::head">
+    <meta charset="UTF-8">
+    <title>Library</title>
+</head>
+<body>
+<h2><a th:href="@{/book}">Back to book list</a></h2>
+<th:block th:if="${message}">
+    <span th:text="${message}" style="color: green"></span>
+</th:block>
+<div>
+    <form enctype="multipart/form-data" th:action="@{/book/save}" th:object="${books}" th:method="post">
+        <div>
+            <label>Name:</label>
+            <input type="text" th:field="*{name}">
+        </div>
+        <div>
+            <label>Price:</label>
+            <input type="text" th:field="*{price}">
+        </div>
+        <div>
+            <label>Author:</label>
+            <input type="text" th:field="*{author}">
+        </div>
+        <div class="file-upload">
+            <label>Image:</label>
+            <input type="file" th:field="*{image}">
+        </div>
+        <div>
+            <select th:field="*{category.id}">
+                <th:block th:each="c : ${categories}">
+                    <option th:value="${c.id}" th:text="${c.name}"></option>
+                </th:block>
+            </select>
+        </div>
+        <div>
+            <input type="submit" value="Create">
+        </div>
+    </form>
+</div>
+</body>
+<footer th:replace="/book/layout::footer"></footer>
+</html>

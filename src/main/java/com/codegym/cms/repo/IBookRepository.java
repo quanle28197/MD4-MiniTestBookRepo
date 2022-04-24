@@ -6,6 +6,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface IBookRepository extends PagingAndSortingRepository<Book, Long> {
+public interface IBookRepository extends PagingAndSortingRepository<Book,Long> {
     Iterable<Book> findAllByCategory(Category category);
+    Iterable<Book> findAllByNameContaining(String name);
 }

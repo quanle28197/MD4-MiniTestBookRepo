@@ -9,10 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -21,7 +18,10 @@ import java.io.IOException;
 import java.util.Optional;
 
 @Controller
+@RequestMapping("/book")
 public class BookController {
+    @Value("${file-upload}")
+    private String fileUpload;
 
     @Autowired
     private IBookService bookService;
@@ -29,90 +29,113 @@ public class BookController {
     @Autowired
     private ICategoryService categoryService;
 
-    @Value("${file-upload}")
-    private String fileUpload;
-
     @ModelAttribute("categories")
-    private Iterable<Category> categories(){
+    public Iterable<Category> categories(){
         return categoryService.findAll();
     }
 
-    @GetMapping("/create-book")
-    public ModelAndView showCreateBookForm(){
+    @GetMapping()
+    public ModelAndView listBook(@RequestParam("search")Optional<String> search){
+        Iterable<Book> books;
+        if (search.isPresent()){
+            books = bookService.findAllByNameContaining(search.get());
+            ModelAndView modelAndView = new ModelAndView("/book/list");
+            modelAndView.addObject("back","Back to book list");
+            modelAndView.addObject("books",books);
+            return modelAndView;
+        } else {
+            books = bookService.findAll();
+            ModelAndView modelAndView = new ModelAndView("/book/list");
+            modelAndView.addObject("books",books);
+            return modelAndView;
+        }
+    }
+    @GetMapping("/create")
+    public ModelAndView showCreateForm(){
         ModelAndView modelAndView = new ModelAndView("/book/create");
-        modelAndView.addObject("book", new Book());
+        modelAndView.addObject("books",new BookForm());
         return modelAndView;
     }
-    @PostMapping("/create-book")
-    public ModelAndView saveBook(BookForm bookForm) {
-        MultipartFile file = bookForm.getAvatar();
-        String fileName = file.getOriginalFilename();
-        String name = bookForm.getName();
-        double price = bookForm.getPrice();
-        String author = bookForm.getAuthor();
-        Category category = bookForm.getCategory();
-
-        try {
-            FileCopyUtils.copy(file.getBytes(), new File(fileUpload+ fileName));
+    @PostMapping("/save")
+    public ModelAndView saveBook(@ModelAttribute("books") BookForm bookForm){
+        MultipartFile multipartFile = bookForm.getImage();
+        String fileName = multipartFile.getOriginalFilename();
+        try{
+            FileCopyUtils.copy(bookForm.getImage().getBytes(),new File(fileUpload + fileName));
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        Book book = new Book(name,price,author,fileName,category);
-
+        Book book = new Book(bookForm.getName(),bookForm.getPrice(),bookForm.getAuthor(),fileName,bookForm.getCategory());
         bookService.save(book);
         ModelAndView modelAndView = new ModelAndView("/book/create");
-        modelAndView.addObject("book", new BookForm());
-        modelAndView.addObject("message", "New book created successfully");
+        modelAndView.addObject("book",book);
+        modelAndView.addObject("message","created successfully!!!");
         return modelAndView;
     }
-
-    @GetMapping("/books")
-    public ModelAndView listBook(){
-        Iterable<Book> books = bookService.findAll();
-        ModelAndView modelAndView = new ModelAndView("/book/list");
-        modelAndView.addObject("books", books);
-        return modelAndView;
-    }
-    @GetMapping("/edit-book/{id}")
-    public ModelAndView showEditBookForm(@PathVariable Long id){
-        Optional<Book> book = bookService.findById(id);
-        if (book.isPresent()){
+    @GetMapping("/edit/{id}")
+    public ModelAndView showFormEdit(@PathVariable Long id){
+        Optional<Book> bookOptional = bookService.findById(id);
+        if (bookOptional.isPresent()){
             ModelAndView modelAndView = new ModelAndView("/book/edit");
-            modelAndView.addObject("book", book.get());
+            modelAndView.addObject("book",bookOptional.get());
             return modelAndView;
         } else {
-            ModelAndView modelAndView = new ModelAndView("error.404");
+            ModelAndView modelAndView = new ModelAndView("/book/edit");
+            modelAndView.addObject("message","Error");
             return modelAndView;
         }
     }
-    @PostMapping("/edit-book")
-    public ModelAndView updateBook(@ModelAttribute("book") Book book) {
+    @PostMapping("/update")
+    public ModelAndView updateBookInformation(@ModelAttribute("book")BookForm bookForm){
+        MultipartFile multipartFile = bookForm.getImage();
+        String fileName = multipartFile.getOriginalFilename();
+        try {
+            FileCopyUtils.copy(bookForm.getImage().getBytes(),new File(fileUpload + fileName));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Book book = new Book(bookForm.getName(),bookForm.getPrice(),bookForm.getAuthor(),fileName,bookForm.getCategory());
+        bookService.remove(bookForm.getId());
         bookService.save(book);
         ModelAndView modelAndView = new ModelAndView("/book/edit");
-        modelAndView.addObject("book", book);
-        modelAndView.addObject("message", "Success!!! ");
+        modelAndView.addObject("message","Updated Success");
+        modelAndView.addObject("book",book);
         return modelAndView;
     }
-
-    @GetMapping("/delete-book/{id}")
-    public ModelAndView showDeleteBookForm(@PathVariable Long id) {
-        Optional<Book> book = bookService.findById(id);
-        if (book.isPresent()) {
+    @GetMapping("/delete/{id}")
+    public ModelAndView showFormDelete(@PathVariable Long id){
+        Optional<Book> optionalBook = bookService.findById(id);
+        if (optionalBook.isPresent()){
             ModelAndView modelAndView = new ModelAndView("/book/delete");
-            modelAndView.addObject("book", book.get());
+            modelAndView.addObject("book",optionalBook.get());
             return modelAndView;
-
         } else {
-            ModelAndView modelAndView = new ModelAndView("/error.404");
+            ModelAndView modelAndView = new ModelAndView("/book/delete");
+            modelAndView.addObject("message","Error");
             return modelAndView;
         }
     }
-
-    @PostMapping("/delete-book")
-    public String deleteCustomer(@ModelAttribute("book") Book book) {
+    @PostMapping("/delete")
+    public ModelAndView deleteBook(@ModelAttribute("book")Book book){
         bookService.remove(book.getId());
-        return "redirect:books";
+        ModelAndView modelAndView = new ModelAndView("/book/list");
+        modelAndView.addObject("books",bookService.findAll());
+        return modelAndView;
     }
-
+    @GetMapping("/view/{id}")
+    public ModelAndView showBookView(@PathVariable Long id){
+        Optional<Book> optionalBook = bookService.findById(id);
+        if (optionalBook.isPresent()){
+            Iterable<Book> books = bookService.findAllByCategory(optionalBook.get().getCategory());
+            ModelAndView modelAndView = new ModelAndView("/book/view");
+            modelAndView.addObject("bookView",optionalBook.get());
+            modelAndView.addObject("books",books);
+            return modelAndView;
+        } else {
+            ModelAndView modelAndView = new ModelAndView("book/list");
+            modelAndView.addObject("books",bookService.findAll());
+            modelAndView.addObject("message","Can't View Book");
+            return modelAndView;
+        }
+    }
 }

@@ -9,10 +9,11 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class BookService implements IBookService {
+public class BookService implements IBookService{
 
     @Autowired
     private IBookRepository bookRepository;
+
 
     @Override
     public Iterable<Book> findAll() {
@@ -37,5 +38,11 @@ public class BookService implements IBookService {
     @Override
     public Iterable<Book> findAllByCategory(Category category) {
         return bookRepository.findAllByCategory(category);
+    }
+
+
+    @Override
+    public Iterable<Book> findAllByNameContaining(String name) {
+        return bookRepository.findAllByNameContaining(name);
     }
 }

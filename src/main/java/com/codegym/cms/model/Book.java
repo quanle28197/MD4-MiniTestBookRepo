@@ -11,61 +11,42 @@ import java.util.List;
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private Long id;
-
     private String name;
-
-    private double price;
-
+    private int price;
     private String author;
-
-    private String avatar;
-
-
+    private String image;
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
 
-    public Book(Long id, String name, double price, String author, String avatar) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.author = author;
-        this.avatar = avatar;
+
+    public String getImage() {
+        return image;
     }
 
-    public Book(String name, double price, String author, String avatar, Category category) {
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public Book(String name, int price, String author, String image, Category category) {
         this.name = name;
         this.price = price;
         this.author = author;
-        this.avatar = avatar;
+        this.image = image;
+        this.category = category;
+    }
+
+
+
+    public Book(String name, int price, String author, Category category) {
+        this.name = name;
+        this.price = price;
+        this.author = author;
         this.category = category;
     }
 
     public Book() {
-    }
-
-    public Book(String name, int price, String author) {
-        this.name = name;
-        this.price = price;
-        this.author = author;
-    }
-
-    public Book(Long id, String name, double price, String author, Category category, String fileName) {
-    }
-
-    @Override
-    public String toString() {
-        return String.format("Book[id=%d, name='%s', price='%s', author='%s']", id,name, price, author);
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
     }
 
     public Long getId() {
@@ -84,11 +65,11 @@ public class Book {
         this.name = name;
     }
 
-    public double getPrice() {
+    public int getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(int price) {
         this.price = price;
     }
 

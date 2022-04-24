@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/book/layout::head">
+    <meta charset="UTF-8">
+    <title>Library</title>
+</head>
+
+<body>
+<div>
+    <h1>Book List</h1>
+    <h2><a th:href="@{/book/create}">Add new book</a></h2>
+</div>
+<form>
+    <div>
+        Search by name:
+    </div>
+    <input name="search" type="text"/>
+    <input type="submit" value="Search"/>
+</form>
+<th:block th:if="${back}">
+    <a th:href="@{/book}" th:text="${back}"></a>
+</th:block>
+<div>
+    <th:block th:if="${message}">
+        <p th:text="${message}"></p>
+    </th:block>
+</div>
+<th:block th:each="book : ${books}">
+    <div class="gallery">
+        <div class="desc"><a target="_blank" th:href="@{/book/view/__${book.id}__}" th:text="${book.name}"></a></div>
+        <a  th:href="@{/book}">
+            <img th:src="@{'/image/' + ${book.image}}" alt="broken" width="220" >
+        </a>
+        <div class="desc" th:text="'Author '+${book.author}"></div>
+        <div class="desc" th:text="'Category ' + ${book.category.name}"></div>
+        <div class="desc" th:text="'Price '+${book.price}"></div>
+        <div class="desc" ><a th:href="@{/book/edit/__${book.id}__}">Edit</a></div>
+        <div class="desc" ><a th:href="@{/book/delete/__${book.id}__}">Delete</a></div>
+    </div>
+</th:block>
+
+</body>
+<footer th:replace="/book/layout :: footer"></footer>
+</html>

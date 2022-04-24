@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/book/layout::head">
+  <meta charset="UTF-8">
+  <title>Library</title>
+</head>
+<body>
+<h1>Edit book information</h1>
+<h3><a th:href="@{/book}">Back to book list</a></h3>
+<th:block th:if="${message}">
+  <p th:text="${message}"></p>
+</th:block>
+<div>
+  <form th:action="@{/book/update}" th:object="${book}" th:method="post" enctype="multipart/form-data">
+    <input th:type="hidden" name="id" th:field="*{id}">
+    <table>
+      <tr>
+        <td>Book Name:</td>
+        <td><input type="text" th:field="*{name}"/></td>
+      </tr>
+      <tr>
+        <td>Price:</td>
+        <td><input type="text" th:field="*{price}"></td>
+      </tr>
+      <tr>
+        <td>Author:</td>
+        <td><input type="text" th:field="*{author}"></td>
+      </tr>
+      <tr>
+        <td>Category:</td>
+        <td>
+          <select name="category">
+            <option th:each="c : ${categories}" th:value="${c.id}"
+                    th:text="${c.name}"
+                    th:selected="(${book.category}) and (${c.id}== *{category.id})"></option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>Image:</td>
+        <td><img th:src="@{'/image/' + *{image}}" alt="broken" width="100"></td>
+        <td>
+          <label>Image:</label>
+          <div class="file-upload"><input type="file" name="image"></div>
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td><input type="submit" value="Edit"></td>
+      </tr>
+    </table>
+  </form>
+</div>
+</body>
+<footer th:replace="/book/layout::footer"> </footer>
+</html>

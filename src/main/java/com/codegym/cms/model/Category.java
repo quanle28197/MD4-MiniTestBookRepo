@@ -5,25 +5,19 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "categories")
+@Table(name= "categories")
 public class Category {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
-
     private String description;
     @OneToMany(targetEntity = Book.class)
-    private List<Book>  book;
+    private List<Book> book;
 
-//    private String avatar;
-
-    public Category() {
-    }
-
-    public Category(String name, String description) {
+    public Category(Long id, String name, String description) {
+        this.id = id;
         this.name = name;
         this.description = description;
     }
@@ -32,6 +26,22 @@ public class Category {
         this.name = name;
         this.description = description;
         this.book = book;
+    }
+
+    public List<Book> getBook() {
+        return book;
+    }
+
+    public void setBook(List<Book> book) {
+        this.book = book;
+    }
+
+    public Category() {
+    }
+
+    public Category(String name, String description) {
+        this.name = name;
+        this.description = description;
     }
 
     public Long getId() {
@@ -56,13 +66,5 @@ public class Category {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public List<Book> getBook() {
-        return book;
-    }
-
-    public void setBook(List<Book> book) {
-        this.book = book;
     }
 }

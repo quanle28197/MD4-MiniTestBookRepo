@@ -1,10 +1,8 @@
 package com.codegym.cms.configuration;
 
 
-import com.codegym.cms.service.bookService.BookService;
+
 import com.codegym.cms.service.categoryService.CategoryService;
-import com.codegym.cms.service.bookService.IBookService;
-import com.codegym.cms.service.categoryService.ICategoryService;
 import com.codegym.cms.formatter.CategoryFormatter;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -16,6 +14,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -43,26 +42,24 @@ import java.util.Properties;
 @Configuration
 @EnableWebMvc
 @EnableTransactionManagement
+@EnableSpringDataWebSupport
 @EnableJpaRepositories("com.codegym.cms.repo")
 @ComponentScan("com.codegym.cms")
 @PropertySource("classpath:upload_file.properties")
 public class AppConfiguration implements WebMvcConfigurer, ApplicationContextAware {
     @Value("${file-upload}")
     private String fileUpload;
-
     private ApplicationContext applicationContext;
 
-    @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
     }
 
-    //Cấu hình Thymleaf
     @Bean
     public SpringResourceTemplateResolver templateResolver() {
         SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
         templateResolver.setApplicationContext(applicationContext);
-        templateResolver.setPrefix("/WEB-INF/views");
+        templateResolver.setPrefix("/WEB-INF/views/");
         templateResolver.setSuffix(".html");
         templateResolver.setTemplateMode(TemplateMode.HTML);
         templateResolver.setCharacterEncoding("UTF-8");
@@ -83,8 +80,6 @@ public class AppConfiguration implements WebMvcConfigurer, ApplicationContextAwa
         viewResolver.setCharacterEncoding("UTF-8");
         return viewResolver;
     }
-
-    //Cấu hình JPA
     @Bean
     @Qualifier(value = "entityManager")
     public EntityManager entityManager(EntityManagerFactory entityManagerFactory) {
@@ -127,26 +122,10 @@ public class AppConfiguration implements WebMvcConfigurer, ApplicationContextAwa
         return properties;
     }
 
-    @Bean
-    public IBookService bookService(){
-        return new BookService();
-    }
-
-    @Bean
-    public ICategoryService categoryService(){
-        return new CategoryService();
-    }
-
-    @Override
-    public void addFormatters(FormatterRegistry registry){
-        registry.addFormatter(new CategoryFormatter(applicationContext.getBean(CategoryService.class)));
-    }
-
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/image/**")
                 .addResourceLocations("file:" + fileUpload);
-
     }
 
     @Bean(name = "multipartResolver")
@@ -156,4 +135,8 @@ public class AppConfiguration implements WebMvcConfigurer, ApplicationContextAwa
         return resolver;
     }
 
+    @Override
+    public void addFormatters(FormatterRegistry registry) {
+        registry.addFormatter(new CategoryFormatter(applicationContext.getBean(CategoryService.class)));
+    }
 }

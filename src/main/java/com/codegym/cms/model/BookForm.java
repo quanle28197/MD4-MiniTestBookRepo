@@ -4,58 +4,44 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class BookForm {
         private Long id;
-
         private String name;
-
-        private double price;
-
+        private int price;
         private String author;
-
-        private MultipartFile avatar;
-
         private Category category;
+        private MultipartFile image;
 
-        public MultipartFile getAvatar() {
-                return avatar;
+        public Category getCategory() {
+                return category;
         }
 
-        public void setAvatar(MultipartFile avatar) {
-                this.avatar = avatar;
-        }
-
-        public BookForm(String name, double price, String author, MultipartFile avatar, Category category) {
-                this.name = name;
-                this.price = price;
-                this.author = author;
-                this.avatar = avatar;
+        public void setCategory(Category category) {
                 this.category = category;
         }
 
-        public BookForm(Long id, String name, double price, String author, MultipartFile avatar, Category category) {
+        public BookForm(String name, int price, String author, Category category, MultipartFile image) {
+                this.name = name;
+                this.price = price;
+                this.author = author;
+                this.category = category;
+                this.image = image;
+        }
+
+        public BookForm(String name, int price, String author, MultipartFile image) {
+                this.name = name;
+                this.price = price;
+                this.author = author;
+                this.image = image;
+        }
+
+        public BookForm(Long id, String name, int price, String author, MultipartFile image) {
                 this.id = id;
                 this.name = name;
                 this.price = price;
                 this.author = author;
-                this.avatar = avatar;
-                this.category = category;
+                this.image = image;
         }
 
         public BookForm() {
-        }
-
-        public BookForm(String name, double price, String author, Category category) {
-                this.name = name;
-                this.price = price;
-                this.author = author;
-                this.category = category;
-        }
-
-        public BookForm(Long id, String name, double price, String author, Category category) {
-                this.id = id;
-                this.name = name;
-                this.price = price;
-                this.author = author;
-                this.category = category;
         }
 
         public Long getId() {
@@ -74,11 +60,11 @@ public class BookForm {
                 this.name = name;
         }
 
-        public double getPrice() {
+        public int getPrice() {
                 return price;
         }
 
-        public void setPrice(double price) {
+        public void setPrice(int price) {
                 this.price = price;
         }
 
@@ -90,13 +76,11 @@ public class BookForm {
                 this.author = author;
         }
 
-        public Category getCategory() {
-                return category;
+        public MultipartFile getImage() {
+                return image;
         }
 
-        public void setCategory(Category category) {
-                this.category = category;
+        public void setImage(MultipartFile image) {
+                this.image = image;
         }
-
-
 }

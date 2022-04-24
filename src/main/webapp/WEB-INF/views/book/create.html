@@ -1,50 +1,44 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
+<head th:replace="/book/layout::head">
     <meta charset="UTF-8">
-    <title>Create customer</title>
+    <title>Library</title>
 </head>
 <body>
-<a href="/books">Trở về </a>
-<h1>Add new Book </h1>
-
+<h2><a th:href="@{/book}">Back to book list</a></h2>
 <th:block th:if="${message}">
-    <p style="color: lawngreen" th:text="${message}"></p>
+    <span th:text="${message}" style="color: green"></span>
 </th:block>
-<form th:action="@{/create-book}" th:object="${book}" method="post">
-    <table>
-        <tr>
-            <td>Book Title :</td>
-            <td><input type="text" th:field="*{name}"/></td>
-        </tr>
-        <tr>
-            <td>Price:</td>
-            <td><input type="text" th:field="*{price}"/></td>
-        </tr>
-        <tr>
-            <td>Author :</td>
-            <td><input type="text" th:field="*{author}"/></td>
-        </tr>
-        <tr>
-            <td>Category:</td>
-            <td>
-                <select th:field="*{category}">
-                    <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}"></option>
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td>Avatar:</td>
-            <td>
-                <input type="file" name="avatar">
-            </td>
-        </tr>
-        <tr>
-            <td></td>
-            <td><input type="submit" value="Create customer"></td>
-        </tr>
-    </table>
-</form>
-<br>
+<div>
+    <form enctype="multipart/form-data" th:action="@{/book/save}" th:object="${books}" th:method="post">
+        <div>
+            <label>Name:</label>
+            <input type="text" th:field="*{name}">
+        </div>
+        <div>
+            <label>Price:</label>
+            <input type="text" th:field="*{price}">
+        </div>
+        <div>
+            <label>Author:</label>
+            <input type="text" th:field="*{author}">
+        </div>
+        <div class="file-upload">
+            <label>Image:</label>
+            <input type="file" th:field="*{image}">
+        </div>
+        <div>
+            <select th:field="*{category.id}">
+                <th:block th:each="c : ${categories}">
+                    <option th:value="${c.id}" th:text="${c.name}"></option>
+                </th:block>
+            </select>
+        </div>
+        <div>
+            <input type="submit" value="Create">
+        </div>
+    </form>
+</div>
 </body>
+<footer th:replace="/book/layout::footer"></footer>
 </html>
