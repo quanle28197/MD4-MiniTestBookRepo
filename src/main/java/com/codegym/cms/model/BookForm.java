@@ -3,46 +3,12 @@ package com.codegym.cms.model;
 import org.springframework.web.multipart.MultipartFile;
 
 public class BookForm {
-        private Long id;
-        private String name;
-        private int price;
-        private String author;
-        private Category category;
-        private MultipartFile image;
-
-        public Category getCategory() {
-                return category;
-        }
-
-        public void setCategory(Category category) {
-                this.category = category;
-        }
-
-        public BookForm(String name, int price, String author, Category category, MultipartFile image) {
-                this.name = name;
-                this.price = price;
-                this.author = author;
-                this.category = category;
-                this.image = image;
-        }
-
-        public BookForm(String name, int price, String author, MultipartFile image) {
-                this.name = name;
-                this.price = price;
-                this.author = author;
-                this.image = image;
-        }
-
-        public BookForm(Long id, String name, int price, String author, MultipartFile image) {
-                this.id = id;
-                this.name = name;
-                this.price = price;
-                this.author = author;
-                this.image = image;
-        }
-
-        public BookForm() {
-        }
+        public Long id;
+        public String name;
+        public int price;
+        public String author;
+        public MultipartFile image;
+        public Category category;
 
         public Long getId() {
                 return id;
@@ -82,5 +48,33 @@ public class BookForm {
 
         public void setImage(MultipartFile image) {
                 this.image = image;
+        }
+
+        public Category getCategory() {
+                return category;
+        }
+
+        public void setCategory(Category category) {
+                this.category = category;
+        }
+
+        public BookForm() {
+        }
+
+        public BookForm(String name, int price, String author, MultipartFile image, Category category) {
+                this.name = name;
+                this.price = price;
+                this.author = author;
+                this.image = image;
+                this.category = category;
+        }
+
+        public BookForm(Long id, String name, int price, String author, MultipartFile image, Category category) {
+                this.id = id;
+                this.name = name;
+                this.price = price;
+                this.author = author;
+                this.image = image;
+                this.category = category;
         }
 }

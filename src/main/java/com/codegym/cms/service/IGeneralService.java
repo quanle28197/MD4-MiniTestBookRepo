@@ -1,5 +1,7 @@
 package com.codegym.cms.service;
 
+import com.codegym.cms.model.Category;
+
 import java.util.Optional;
 
 public interface IGeneralService<T> {

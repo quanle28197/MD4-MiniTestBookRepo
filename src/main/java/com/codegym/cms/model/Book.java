@@ -1,10 +1,9 @@
 package com.codegym.cms.model;
 
-import org.springframework.web.multipart.MultipartFile;
+
 
 import javax.persistence.*;
-import java.util.Calendar;
-import java.util.List;
+
 
 @Entity
 @Table(name = "books")
